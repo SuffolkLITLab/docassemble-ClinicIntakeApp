@@ -1,8 +1,1 @@
-# docassemble.ClinicIntakeApp
-
-A docassemble extension.
-
-## Author
-
-mcarroll11@su.suffolk.edu
-
+This App helps Suffolk Clinic Student Attorneys gather client data and fills out commonly used forms. This app was started with the intention of being able to fax the HIPAA release to hospitals. While this function is available, the function/purpose of this app has been expanded to include all clinic intake forms.

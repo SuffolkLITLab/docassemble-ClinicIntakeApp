@@ -22,12 +22,6 @@ fields:
       - Accelerator to Practice: a2p_student
     none of the above: False
 ---
-mandatory: True
-code: |
-  if not user_logged_in():
-    require_login_screen
-  ok_to_finish = True
----
 include:
   - docassemble.AssemblyLine:al_package.yml
   - docassemble.MassAccess:massaccess.yml
@@ -130,19 +124,6 @@ code: |
   studentattorney.signature
   supervisor.signature
   what_next
-  if use_fax:
-    fax_app
-    advise_client
-    hospital.name
-    fax_from
-    got_result
-    all_done
-    display_fax_results
-    what_next
-  else:
-    intake_finished
-    saw_intake_forms
-    what_next
   exit_screen
   #JDC_HIPAA_Improved_download
 ---
@@ -189,9 +170,10 @@ right: |
 ---
 id: Suffolk University HIPAA App
 question: |
-  Suffolk University HIPAA App
+  ##Suffolk University Law School
+              Electronic Fax Machine
 subquestion: |
- Fax your HIPAA release form to the hospital.
+ Fax **${ client.name }'s** HIPAA release form to the hospital.
 
 
 fields:
@@ -200,7 +182,19 @@ fields:
     required: false
 continue button field: fax_app
 under: |
-  Student Attorneys are responsible for protecting client information at all times. Suffolk University Law School is not liable for any misuse of this application and releases all liability to any claims that may arise from using this tool.
+  **Attention:** Student Attorneys are responsible for protecting client information at all times. Suffolk University Law School is not liable for any misuse of this application and releases all liability to any claims that may arise from using this tool.
+---
+intitial: True
+code: |
+if use_fax:
+  fax_app
+    advise_client
+    hospital.name
+    fax_from
+    got_result
+    all_done
+    display_fax_results
+    what_next
 ---
 id: Student Attorney
 question: |
@@ -214,9 +208,9 @@ objects:
 ---
 id: end of representation
 question: |
-  HIPAA form is effective through the end of representation.
+  Effective dates of HIPAA release
 subquestion: |
-  *Advise ${client.name}* this form is valid through the end of Suffolk Juvenile Defender Clinic's representation.
+  *Advise ${client.name}* this form is valid through the end of The Clinic's representation of them.
 mandatory: True
 field: advise_client
 ---
@@ -231,12 +225,12 @@ fields:
   - Client Birthday: client.dob
     datatype: date
 ---
-mandatory: True
-code: |
-  if user_logged_in():
-    goodbye_page
-  else:
-    sign_in_page
+#mandatory: True
+#code: |
+  #if user_logged_in():
+    #goodbye_page
+  #else:
+    #sign_in_page
 ---
 question: |
   Please sign in
@@ -388,6 +382,7 @@ attachment:
       - "todays.date": ${ today() }
       - "fax_subject": ${ fax_subject }
       - "fax_comment": ${ fax_comment }
+# on cover sheet make from_fax the clinic's fax number
 ---
 attachment:
   variable name: JDC_HIPAA_Improved_attachment
@@ -426,7 +421,7 @@ id: Appearance Disclosure
 question: |
  **S.J.C. RULE 3:03 DISCLOSURE**
 subquestion: |
-  *I understand that my counsel is a law student enrolled in the Juvenile Defenders Clinic, and further understand that another attorney will be appointed to me instead if I so desire. I authorize {studentattorney.name} and any successor student attorneys of the Suffolk University Law School Clinical Programs to represent me in the above-entitled case.*
+  *I understand that my counsel is a law student enrolled in the Juvenile Defenders Clinic, and further understand that another attorney will be appointed to me instead if I so desire. I authorize ${ studentattorney.name } and any successor student attorneys of the Suffolk University Law School Clinical Programs to represent me in the above-entitled case.*
 continue button field: showed_disclosure
 fields:
   - To continue, acknowledge client recieved disclosure: acknowledged_disclosure
@@ -551,6 +546,14 @@ subquestion: |
   **Below is the response you receieved from the FAX API. "Fax Status:  Queued" indicates the request was successful and the app is working properly**
 
   ${ result }
+
+# add button to download the fax that was sent, alternatively - send student attorney an email copy of the fax package- needs to have a screen that tell user what was done with their fax-generate a follow up email with all forms generated
+
+#make sending email conditional upon recieving feedback from the API
+
+buttons:
+  - Logout: logout
+  - Continue using app: what_next
 event: all_done
 ---
 id:  Hospital Information
@@ -611,20 +614,22 @@ field: saw_intake_forms
 under:
   continue button label: Done
 ---
-id: what next
+id: exit
 question: |
-  **Intake interview is finished**
+  **Intake interview complete**
 subquestion: |
-  What do you want to do
+  Your intake forms are ready. What do you want to do?
 field: what_next
 choices:
-  - View completed intake forms
-  - Fax HIPAA form
-  - Exit application
+  - Manage forms
+  - Fax HIPAA release to hospital
+  - Exit
+under: |
+  Note: You can log back in to send your forms using this app.
 ---
-mandatory: True
+initial: True
 code: |
-  if what_next == 'View completed intake forms':
+  if what_next == 'Manage forms':
     intake_finished
   if what_next == 'Fax HIPAA release':
     use_fax
@@ -641,3 +646,7 @@ buttons:
   - Fax HIPAA form: use_fax
 event: exit_screen
 ---
+#initial: True
+#code: |
+  #if not user_logged_in():
+    #require_login_screen
