@@ -11,6 +11,7 @@ objects:
   - defender: DAObject
   - accelerator: DAObject
 ---
+id: "select your clinic"
 question: |
   Select your clinic
 fields:
@@ -232,6 +233,7 @@ fields:
   #else:
     #sign_in_page
 ---
+id: "please sign in"
 question: |
   Please sign in
 buttons:
@@ -572,6 +574,7 @@ code: |
 code: |
   country: US
 ---
+id: "warning you are about to send a fax"
 question: |
   **WARNING:** You are about to send a fax.
 subquestion: |
