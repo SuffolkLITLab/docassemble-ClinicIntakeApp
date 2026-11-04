@@ -149,7 +149,7 @@ subquestion: |
   (:comment-alt:) in the navigation bar to connect to a live advocate for help.
   % endif
 fields:
-  - To continue, you must accept our [terms of use](https://courtformsonline.org/privacy/): acknowledged_information_use
+  - To continue, you must accept our [terms of use](https://courtformsonline.org/privacy): acknowledged_information_use
     datatype: checkboxes
     none of the above: False
     minlength: 1
@@ -185,10 +185,10 @@ continue button field: fax_app
 under: |
   **Attention:** Student Attorneys are responsible for protecting client information at all times. Suffolk University Law School is not liable for any misuse of this application and releases all liability to any claims that may arise from using this tool.
 ---
-intitial: True
+initial: True
 code: |
-if use_fax:
-  fax_app
+  if use_fax:
+    fax_app
     advise_client
     hospital.name
     fax_from
@@ -360,7 +360,7 @@ id:  Fax cover sheet data
 question: |
   Fax Cover Sheet
 subquestion: |
-  The information below will be included on the cover sheet of your fax to the hopsital
+  The information below will be included on the cover sheet of your fax to the hospital
 fields:
   - From fax number: fax_from
   - From phone number: fax_phone
@@ -426,12 +426,12 @@ subquestion: |
   *I understand that my counsel is a law student enrolled in the Juvenile Defenders Clinic, and further understand that another attorney will be appointed to me instead if I so desire. I authorize ${ studentattorney.name } and any successor student attorneys of the Suffolk University Law School Clinical Programs to represent me in the above-entitled case.*
 continue button field: showed_disclosure
 fields:
-  - To continue, acknowledge client recieved disclosure: acknowledged_disclosure
+  - To continue, acknowledge client received disclosure: acknowledged_disclosure
     datatype: checkboxes
     none of the above: False
     minlength: 1
     choices:
-      - "**Client recieved disclosure**"
+      - "**Client received disclosure**"
     validation messages:
       minlength: |
         You cannot continue unless you acknowledge your client has acknowledged this disclousre
@@ -519,14 +519,14 @@ metadata:
     - admin
 ---
 objects:
-  - web: DAWeb.using(base_url='https://api.telnyx.com/v2', json_body=False, on_failure='raise')
+  - web: DAWeb.using(base_url=get_config("telnyx").get("url"), json_body=False, on_failure='raise')
 ---
 code: |
-  data = {'media_url': "https://apps-dev.suffolklitlab.org/data/templates/JDC_HIPAA_Improved.pdf ",
+  data = {'media_url': url_of("JDC_HIPAA_Improved.pdf"),
     'connection_id': '1584353915762115606',
     'to': hospital_fax_formatted,
     'from': '+18332979197'}
-  headers = {'Authorization': 'Bearer KEY0177F9770F9DA6B296C4098DDA8A8B99_EksqAtVPNAEp4XGMflLPuT',
+  headers = {'Authorization': f'Bearer {get_config("telnyx").get("api key")}',
              'Content-Type': 'application/x-www-form-urlencoded'
              }
   try:
@@ -545,13 +545,13 @@ question: |
   This is the end screen.
 subquestion: |
 
-  **Below is the response you receieved from the FAX API. "Fax Status:  Queued" indicates the request was successful and the app is working properly**
+  **Below is the response you received from the FAX API. "Fax Status:  Queued" indicates the request was successful and the app is working properly**
 
   ${ result }
 
 # add button to download the fax that was sent, alternatively - send student attorney an email copy of the fax package- needs to have a screen that tell user what was done with their fax-generate a follow up email with all forms generated
 
-#make sending email conditional upon recieving feedback from the API
+#make sending email conditional upon receiving feedback from the API
 
 buttons:
   - Logout: logout
